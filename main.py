@@ -1,45 +1,40 @@
 from httpx import AsyncClient
-from typing import List
-from fastapi import FastAPI
-
-from models import CreateLead, Lead, DomainSearch
-import os
+from fastapi import FastAPI, HTTPException
+from models import LeadsData, DomainSearchData, CreateLead, GetLeadsData
 
 app = FastAPI(title="Hunter Leads API")
 
-
-@app.get("/all_leads", response_model=CreateLead)
-async def get_all_leads() -> CreateLead:
-    """Get all leads."""
+@app.get("/leads", response_model=LeadsData)
+async def get_leads():
+    apiKey = "af6af38ccb697fb408411f0a3c64bec9835a11ae"
+    url = f"https://api.hunter.io/v2/leads?api_key={apiKey}"
+    
     async with AsyncClient() as client:
-        response = await client.get(
-            f"https://api.hunter.io/v2/leads?api_key={os.environ.get('HUNTER_API_KEY')}"
-        )
-        response.raise_for_status()
-        list_leads = response.json()
-        return CreateLead(**list_leads)
+        response = await client.get(url)
+        if response.status_code != 200:
+            raise HTTPException(status_code=response.status_code, detail="Failed to fetch leads data")
+        return response.json()
+    
 
-
-@app.get("/domain-search/{domain}", response_model=DomainSearch)
-async def domain_search(domain: str) -> DomainSearch:
-    """Search domain by domain name."""
+@app.get("/domain-search/{domain}", response_model=DomainSearchData)
+async def get_list_search_domain(domain: str):
+    api_key = "af6af38ccb697fb408411f0a3c64bec9835a11ae"
+    url = f"https://api.hunter.io/v2/domain-search?domain={domain}&api_key={api_key}"
+    
     async with AsyncClient() as client:
-        response = await client.get(
-            f"https://api.hunter.io/v2/domain-search?domain={domain}&api_key={os.environ.get('HUNTER_API_KEY')}"
-        )
-        response.raise_for_status()
-        search_data = response.json()
-        return DomainSearch(**search_data)
+        response = await client.get(url)
+        if response.status_code != 200:
+            raise HTTPException(status_code=response.status_code, detail="Failed to fetch domains data")
+        return response.json()
 
 
-@app.post("/leads", response_model=Lead)
-async def create_lead(lead_data: CreateLead) -> Lead:
-    """Create new lead."""
+@app.post("/leads", response_model=GetLeadsData)
+async def create_lead(lead_data: CreateLead):
+    api_key = "af6af38ccb697fb408411f0a3c64bec9835a11ae"
+    url = f"https://api.hunter.io/v2/leads?api_key={api_key}"
+    
     async with AsyncClient() as client:
-        response = await client.post(
-            f"https://api.hunter.io/v2/leads?api_key={os.environ.get('HUNTER_API_KEY')}",
-            json=lead_data.model_dump(),
-        )
-        response.raise_for_status()
-        response_lead_data = response.json()
-        return Lead(**response_lead_data)
+        response = await client.post(url, json=lead_data.model_dump(exclude_none=True))
+        if response.status_code not in [200, 201]:
+            raise HTTPException(status_code=response.status_code, detail="Failed to create lead")
+        return response.json()
