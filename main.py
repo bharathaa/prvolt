@@ -28,7 +28,7 @@ async def get_list_search_domain(domain: str):
         return response.json()
 
 
-@app.post("/leads", response_model=GetLeadsData)
+@app.post("/lead", response_model=GetLeadsData)
 async def create_lead(lead_data: CreateLead):
     api_key = "af6af38ccb697fb408411f0a3c64bec9835a11ae"
     url = f"https://api.hunter.io/v2/leads?api_key={api_key}"
