@@ -10,10 +10,13 @@ Url: http://127.0.0.1:8000/
 <img width="1793" height="614" alt="image" src="https://github.com/user-attachments/assets/9c700b4b-1de4-401a-bf01-53883f6fc2ae" />
 <img width="1819" height="990" alt="image" src="https://github.com/user-attachments/assets/972a4a07-f4e7-45ea-ba3a-681e503600b2" />
 
-![Uploading image.png…]()
+<img width="1891" height="903" alt="image" src="https://github.com/user-attachments/assets/2f11d9b3-7a68-4308-a5ba-aebebda6da1c" />
 
 Tools utilized:
   Python 3.12.8
   FastAPI
   Pydantic
   VS Code
+
+Hunter.ai
+![Uploading image.png…]()
